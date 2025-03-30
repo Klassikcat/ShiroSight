@@ -1,30 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
-  <!-- Reduced size background circle with lighter tone -->
-  <circle cx="200" cy="150" r="130" fill="#e8e9ec" />
+  <!-- Background circle with chessboard pattern -->
+  <circle cx="200" cy="200" r="140" fill="#e8e9ec" />
+  
+  <!-- Pastel Chessboard Background -->
+  <defs>
+    <pattern id="chessboard" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
+      <rect width="20" height="20" fill="#f4e6fa" />
+      <rect x="20" width="20" height="20" fill="#fce6f1" />
+      <rect y="20" width="20" height="20" fill="#fce6f1" />
+      <rect x="20" y="20" width="20" height="20" fill="#f4e6fa" />
+    </pattern>
+  </defs>
+  <circle cx="200" cy="200" r="132" fill="url(#chessboard)" />
   
   <!-- Outer ring with pastel NGNL colors -->
-  <circle cx="200" cy="150" r="130" fill="none" stroke="#f5a9c6" stroke-width="6" />
-  <circle cx="200" cy="150" r="122" fill="none" stroke="#c4b0e6" stroke-width="2" />
+  <circle cx="200" cy="200" r="140" fill="none" stroke="#f5a9c6" stroke-width="6" />
+  <circle cx="200" cy="200" r="132" fill="none" stroke="#c4b0e6" stroke-width="2" />
   
-  <!-- Abstract eye shape resembling Shiro's chess piece motif -->
-  <ellipse cx="200" cy="143" rx="85" ry="60" fill="#e8e9ec" />
-  <ellipse cx="200" cy="143" rx="78" ry="53" fill="#c4b0e6" opacity="0.3" />
+  <!-- Enlarged abstract eye shape resembling Shiro's chess piece motif -->
+  <ellipse cx="200" cy="192" rx="120" ry="85" fill="#e8e9ec" opacity="0.9" />
+  <ellipse cx="200" cy="192" rx="112" ry="77" fill="#c4b0e6" opacity="0.3" />
   
   <!-- Pupil with data visualization effect -->
-  <circle cx="200" cy="143" r="28" fill="#ffffff" />
-  <circle cx="200" cy="143" r="24" fill="#f5a9c6" />
-  <circle cx="200" cy="143" r="14" fill="#ffffff" />
+  <circle cx="200" cy="192" r="38" fill="#ffffff" />
+  <circle cx="200" cy="192" r="33" fill="#f5a9c6" />
+  <circle cx="200" cy="192" r="19" fill="#ffffff" />
   
   <!-- Data stream lines -->
-  <path d="M144 105 L256 181" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
-  <path d="M144 181 L256 105" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
-  <path d="M164 98 L235 188" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
-  <path d="M164 188 L235 98" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M120 150 L280 234" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M120 234 L280 150" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M152 142 L248 242" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M152 242 L248 142" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
   
   <!-- Chess piece crown element -->
-  <path d="M177 66 L170 80 L185 80 L177 95 L192 80 L207 80 L200 66 L214 80 L228 80 L221 66 z" fill="#f5a9c6" />
+  <path d="M170 110 L160 126 L180 126 L170 143 L190 126 L210 126 L200 110 L220 126 L240 126 L230 110 z" fill="#f5a9c6" />
   
-  <!-- Text completely separated from logo with updated color -->
-  <text x="200" y="350" font-family="Arial, sans-serif" font-size="45" fill="#6a4c93" text-anchor="middle" font-weight="bold">ShiroSight</text>
-  <text x="200" y="385" font-family="Arial, sans-serif" font-size="20" fill="#c4b0e6" text-anchor="middle">LLM-Powered Log Analysis</text>
+  <!-- Text positioned to fill canvas -->
+  <text x="200" y="420" font-family="Arial, sans-serif" font-size="50" fill="#6a4c93" text-anchor="middle" font-weight="bold">ShiroSight</text>
+  <text x="200" y="460" font-family="Arial, sans-serif" font-size="24" fill="#c4b0e6" text-anchor="middle">LLM-Powered Log Analysis</text>
 </svg>

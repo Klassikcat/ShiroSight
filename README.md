@@ -1,8 +1,13 @@
 <div align="center">
   <img src="./static/shirosight-logo.svg" alt="shirosight" width="550"">
 </div>
-<hr>
+<div align="center">
+<b>
+| <a href="docs/installation.md">[Installation]</a> | <a href="docs/configuration.md">[Configuration]</a> | <a href="docs/usage.md">[Usage]</a> | <a href="docs/examples.md">[Example]</a> | <a href="docs/contributing.md">[Contributing]</a> |
+</b>
+</div>
 <br>
+<hr>
 
 ShiroSight is an open-source tool for log analysis powered by Large Language Models. It leverages serverless functions and workflows (both DAG and non-DAG) to process and analyze logs using models from providers like OpenAI, Claude, and others. ShiroSight helps teams extract meaningful insights from their log data without the need for complex infrastructure management.
 
@@ -17,18 +22,16 @@ ShiroSight offers the following key features:
 
 # Installation
 
-## Choose right method
+For quick deployment, follow these steps:
 
-## Terraform
+```bash
+aws sso login
+cd deployments/terraform
+terraform init
+terraform apply 
+```
 
-## SAM + Cloudformation
-
-## Serverless framework
-
-## Knative
-
-# Integrations
-
-## Cloudwatch
+Or, see [Installation](./docs/installation.md) to get more information
 
 # License
+

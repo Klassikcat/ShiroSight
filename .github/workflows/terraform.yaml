@@ -1,0 +1,9 @@
+on:
+    workflow_call:
+
+jobs:
+    install:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install Terraform
+              uses: hashicorp/terraform-github-actions/setup-terraform@v2

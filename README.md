@@ -3,7 +3,7 @@
 </div>
 <div align="center">
 <b>
-| <a href="docs/installation.md">[Installation]</a> | <a href="docs/configuration.md">[Configuration]</a> | <a href="docs/usage.md">[Usage]</a> | <a href="docs/examples.md">[Example]</a> | <a href="docs/contributing.md">[Contributing]</a> |
+<a href="docs/installation.md">Installation</a> | <a href="docs/configuration.md">Configuration</a> | <a href="docs/usage.md">Usage</a> | <a href="docs/examples.md">Example</a> | <a href="docs/contributing.md">Contributing</a>
 </b>
 </div>
 <br>

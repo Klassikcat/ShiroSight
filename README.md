@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./static/shirosight.png" alt="shirosight" style="border-radius: 20px;">
+  <img src="./static/shirosight.png" alt="shirosight">
 </div>
 <hr>
 <br>

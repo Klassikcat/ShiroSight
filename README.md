@@ -1,10 +1,5 @@
 <div align="center">
-  <img src="./static/shirosight-logo.svg" width="450" height="450" alt="shirosight">
-</div>
-
-<div align="center">
-  <p style="font-size: 2.5em; font-weight: bold;">ShiroSight</p>
-  <p style="font-size: 1.5em;">LLM-Powered Log Analysis</p>
+  <img src="./static/shirosight.png" alt="shirosight" style="border-radius: 20px;">
 </div>
 <hr>
 <br>

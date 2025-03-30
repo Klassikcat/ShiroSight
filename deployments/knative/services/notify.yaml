@@ -1,0 +1,32 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: notify
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+      - image: ${REGISTRY}/notify:latest
+        env:
+        - name: AWS_REGION
+          value: ${AWS_REGION}
+        - name: DYNAMODB_TABLE
+          value: ${DYNAMODB_TABLE}
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: notification-secrets
+              key: slack-webhook-url
+        - name: SNS_TOPIC_ARN
+          value: ${SNS_TOPIC_ARN}
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi" 

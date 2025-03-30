@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: process-chunks
+spec:
+  params:
+  - name: s3-bucket
+    type: string
+    description: "S3 bucket for storing intermediate results"
+  workspaces:
+  - name: source
+    description: "Workspace for storing intermediate results"
+  steps:
+  - name: process-chunks
+    image: ${REGISTRY}/process-chunks:latest
+    env:
+    - name: S3_BUCKET
+      value: $(params.s3-bucket)
+    script: |
+      #!/bin/sh
+      node /workspace/source/index.js 

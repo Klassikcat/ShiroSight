@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: notify
+spec:
+  workspaces:
+  - name: source
+    description: "Workspace for storing intermediate results"
+  steps:
+  - name: notify
+    image: ${REGISTRY}/notify:latest
+    env:
+    - name: DYNAMODB_TABLE
+      value: ${DYNAMODB_TABLE}
+    - name: SLACK_WEBHOOK_URL
+      valueFrom:
+        secretKeyRef:
+          name: notification-secrets
+          key: slack-webhook-url
+    - name: SNS_TOPIC_ARN
+      value: ${SNS_TOPIC_ARN}
+    script: |
+      #!/bin/sh
+      node /workspace/source/index.js 

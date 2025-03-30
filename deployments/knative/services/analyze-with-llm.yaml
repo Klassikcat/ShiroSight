@@ -1,0 +1,35 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: analyze-with-llm
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+      - image: ${REGISTRY}/analyze-with-llm:latest
+        env:
+        - name: AWS_REGION
+          value: ${AWS_REGION}
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: llm-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: llm-secrets
+              key: anthropic-api-key
+        - name: SQS_QUEUE_URL
+          value: ${SQS_QUEUE_URL}
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi" 

@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: collect-logs
+spec:
+  params:
+  - name: log-group
+    type: string
+    description: "CloudWatch Log Group to analyze"
+  - name: time-range
+    type: string
+    description: "Time range for log analysis"
+  - name: s3-bucket
+    type: string
+    description: "S3 bucket for storing intermediate results"
+  workspaces:
+  - name: source
+    description: "Workspace for storing intermediate results"
+  steps:
+  - name: collect-logs
+    image: ${REGISTRY}/collect-logs:latest
+    env:
+    - name: LOG_GROUP
+      value: $(params.log-group)
+    - name: TIME_RANGE
+      value: $(params.time-range)
+    - name: S3_BUCKET
+      value: $(params.s3-bucket)
+    script: |
+      #!/bin/sh
+      node /workspace/source/index.js 

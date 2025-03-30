@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: analyze-with-llm
+spec:
+  workspaces:
+  - name: source
+    description: "Workspace for storing intermediate results"
+  steps:
+  - name: analyze-with-llm
+    image: ${REGISTRY}/analyze-with-llm:latest
+    env:
+    - name: OPENAI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: llm-secrets
+          key: openai-api-key
+    - name: ANTHROPIC_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: llm-secrets
+          key: anthropic-api-key
+    script: |
+      #!/bin/sh
+      node /workspace/source/index.js 

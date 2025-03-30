@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: aggregate-results
+spec:
+  workspaces:
+  - name: source
+    description: "Workspace for storing intermediate results"
+  steps:
+  - name: aggregate-results
+    image: ${REGISTRY}/aggregate-results:latest
+    env:
+    - name: DYNAMODB_TABLE
+      value: ${DYNAMODB_TABLE}
+    script: |
+      #!/bin/sh
+      node /workspace/source/index.js 

@@ -1,0 +1,70 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: log-analysis-pipeline
+spec:
+  params:
+  - name: log-group
+    type: string
+    description: "CloudWatch Log Group to analyze"
+  - name: time-range
+    type: string
+    description: "Time range for log analysis"
+  - name: s3-bucket
+    type: string
+    description: "S3 bucket for storing intermediate results"
+  workspaces:
+  - name: shared-workspace
+  tasks:
+  - name: collect-logs
+    taskRef:
+      name: collect-logs
+    params:
+    - name: log-group
+      value: $(params.log-group)
+    - name: time-range
+      value: $(params.time-range)
+    - name: s3-bucket
+      value: $(params.s3-bucket)
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: process-chunks
+    taskRef:
+      name: process-chunks
+    runAfter:
+    - collect-logs
+    params:
+    - name: s3-bucket
+      value: $(params.s3-bucket)
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: analyze-with-llm
+    taskRef:
+      name: analyze-with-llm
+    runAfter:
+    - process-chunks
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: aggregate-results
+    taskRef:
+      name: aggregate-results
+    runAfter:
+    - analyze-with-llm
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+
+  - name: notify
+    taskRef:
+      name: notify
+    runAfter:
+    - aggregate-results
+    workspaces:
+    - name: source
+      workspace: shared-workspace 

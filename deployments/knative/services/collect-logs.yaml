@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: collect-logs
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+      - image: ${REGISTRY}/collect-logs:latest
+        env:
+        - name: AWS_REGION
+          value: ${AWS_REGION}
+        - name: LOG_GROUP
+          value: ${LOG_GROUP}
+        - name: S3_BUCKET
+          value: ${S3_BUCKET}
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi" 

@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: process-chunks
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+      - image: ${REGISTRY}/process-chunks:latest
+        env:
+        - name: AWS_REGION
+          value: ${AWS_REGION}
+        - name: S3_BUCKET
+          value: ${S3_BUCKET}
+        - name: SQS_QUEUE_URL
+          value: ${SQS_QUEUE_URL}
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi" 

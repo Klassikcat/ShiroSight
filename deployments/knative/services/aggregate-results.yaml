@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: aggregate-results
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+      - image: ${REGISTRY}/aggregate-results:latest
+        env:
+        - name: AWS_REGION
+          value: ${AWS_REGION}
+        - name: DYNAMODB_TABLE
+          value: ${DYNAMODB_TABLE}
+        - name: SQS_QUEUE_URL
+          value: ${SQS_QUEUE_URL}
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi" 

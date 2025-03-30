@@ -3,8 +3,8 @@
 </div>
 
 <div align="center">
-  <p style="font-size: 2.5em; font-weight: bold; margin-bottom: 0;">ShiroSight</p>
-  <p style="font-size: 1.5em; margin-top: 0;">LLM-Powered Log Analysis</p>
+  <p style="font-size: 2.5em; font-weight: bold;">ShiroSight</p>
+  <p style="font-size: 1.5em;">LLM-Powered Log Analysis</p>
 </div>
 <hr>
 <br>

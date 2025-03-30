@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <!-- Reduced size background circle with lighter tone -->
+  <circle cx="200" cy="150" r="130" fill="#e8e9ec" />
+  
+  <!-- Outer ring with pastel NGNL colors -->
+  <circle cx="200" cy="150" r="130" fill="none" stroke="#f5a9c6" stroke-width="6" />
+  <circle cx="200" cy="150" r="122" fill="none" stroke="#c4b0e6" stroke-width="2" />
+  
+  <!-- Abstract eye shape resembling Shiro's chess piece motif -->
+  <ellipse cx="200" cy="143" rx="85" ry="60" fill="#e8e9ec" />
+  <ellipse cx="200" cy="143" rx="78" ry="53" fill="#c4b0e6" opacity="0.3" />
+  
+  <!-- Pupil with data visualization effect -->
+  <circle cx="200" cy="143" r="28" fill="#ffffff" />
+  <circle cx="200" cy="143" r="24" fill="#f5a9c6" />
+  <circle cx="200" cy="143" r="14" fill="#ffffff" />
+  
+  <!-- Data stream lines -->
+  <path d="M144 105 L256 181" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M144 181 L256 105" stroke="#c4b0e6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M164 98 L235 188" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
+  <path d="M164 188 L235 98" stroke="#f5a9c6" stroke-width="1.5" stroke-dasharray="4,2" />
+  
+  <!-- Chess piece crown element -->
+  <path d="M177 66 L170 80 L185 80 L177 95 L192 80 L207 80 L200 66 L214 80 L228 80 L221 66 z" fill="#f5a9c6" />
+  
+  <!-- Text completely separated from logo with updated color -->
+  <text x="200" y="350" font-family="Arial, sans-serif" font-size="45" fill="#6a4c93" text-anchor="middle" font-weight="bold">ShiroSight</text>
+  <text x="200" y="385" font-family="Arial, sans-serif" font-size="20" fill="#c4b0e6" text-anchor="middle">LLM-Powered Log Analysis</text>
+</svg>

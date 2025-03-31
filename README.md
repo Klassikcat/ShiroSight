@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="./static/shirosight-icon.svg", alt="shirosight-logo", width=350>
   <img src="./static/shirosight-logo.svg" alt="shirosight" width="550"">
 </div>
 <div align="center">

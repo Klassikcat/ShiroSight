@@ -1,0 +1,51 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 원 -->
+  <circle cx="200" cy="200" r="180" fill="#202340" />
+  
+  <!-- 체스판 패턴 배경 - 은은하게 표현 -->
+  <defs>
+    <pattern id="chessPattern" patternUnits="userSpaceOnUse" width="50" height="50" patternTransform="rotate(0)">
+      <rect width="25" height="25" fill="#1d2038" />
+      <rect x="25" y="0" width="25" height="25" fill="#242745" />
+      <rect x="0" y="25" width="25" height="25" fill="#242745" />
+      <rect x="25" y="25" width="25" height="25" fill="#1d2038" />
+    </pattern>
+  </defs>
+  
+  <!-- 체스판 배경을 원 형태로 적용 -->
+  <circle cx="200" cy="200" r="170" fill="url(#chessPattern)" opacity="0.7" />
+  
+  <!-- 터미널/모니터 윤곽선 -->
+  <rect x="90" y="120" width="220" height="160" rx="10" fill="#30305a" stroke="#8c68a6" stroke-width="3"/>
+  
+  <!-- 모니터 화면 -->
+  <rect x="100" y="130" width="200" height="120" rx="5" fill="#151530"/>
+  
+  <!-- 로그 텍스트 라인들 (시로의 특징적인 붉은색/보라색으로) -->
+  <line x1="110" y1="150" x2="210" y2="150" stroke="#a269b5" stroke-width="2"/>
+  <line x1="110" y1="170" x2="230" y2="170" stroke="#8c68a6" stroke-width="2"/>
+  <line x1="110" y1="190" x2="190" y2="190" stroke="#d54c7a" stroke-width="2"/>
+  <line x1="110" y1="210" x2="250" y2="210" stroke="#a269b5" stroke-width="2"/>
+  <line x1="110" y1="230" x2="170" y2="230" stroke="#d54c7a" stroke-width="2"/>
+  
+  <!-- 모니터 아래 받침대 -->
+  <path d="M170,280 L230,280 L240,300 L160,300 Z" fill="#30305a" stroke="#8c68a6" stroke-width="2"/>
+  
+  <!-- 시로의 특징적인 붉은 눈 모티프 -->
+  <circle cx="270" cy="170" r="15" fill="#151530" stroke="#8c68a6" stroke-width="2"/>
+  <circle cx="270" cy="170" r="8" fill="#d54c7a"/>
+  <circle cx="273" cy="167" r="3" fill="#fff" opacity="0.8"/>
+  
+  <!-- 시로의 게임 헤드셋 모티프 -->
+  <path d="M240,130 Q270,90 300,130" fill="none" stroke="#8c68a6" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- 시로의 흰색 머리카락 모티프 -->
+  <path d="M270,120 Q280,100 290,115 Q300,95 310,110 Q320,90 325,110" fill="none" stroke="#f2f2f2" stroke-width="3" stroke-linecap="round"/>
+  <path d="M260,125 Q240,105 230,120" fill="none" stroke="#f2f2f2" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- 데이터 분석/그래프 모티프 -->
+  <polyline points="120,220 140,190 160,210 180,170 200,190 220,150" fill="none" stroke="#6f9bda" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- 시로의 체스말 모티프 (로그 분석의 전략성을 상징) -->
+  <path d="M130,260 L140,250 L150,260 L143,260 L143,270 L137,270 L137,260 Z" fill="#d54c7a"/>
+</svg>

@@ -1,8 +1,9 @@
-<div align="center">
-  <img src="./static/shirosight-icon.svg", alt="shirosight-logo", width=350>
-  <img src="./static/shirosight-logo.svg" alt="shirosight" width="550"">
+<<div align="center">
+  <img src="./static/shirosight-icon.svg" alt="shirosight-logo" width="400" height="400"><br />
+  <img src="./static/shirosight-logo.svg" alt="shirosight" width="650" height="200">
 </div>
 <div align="center">
+<br />
 <b>
 <a href="docs/installation.md">Installation</a> | <a href="docs/configuration.md">Configuration</a> | <a href="docs/usage.md">Usage</a> | <a href="docs/examples.md">Example</a> | <a href="docs/contributing.md">Contributing</a>
 </b>

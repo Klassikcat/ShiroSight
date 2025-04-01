@@ -1,55 +1,57 @@
-import { Handler } from 'aws-lambda';
-import { WebClient } from '@slack/web-api';
+import { Handler } from "aws-lambda";
+import { WebClient } from "@slack/web-api";
 
 interface NotificationEvent {
-  Records: any[];
+    Records: any[];
 }
 
 interface NotificationResult {
-  statusCode: number;
-  body: string;
+    statusCode: number;
+    body: string;
 }
 
 const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
-export const handler: Handler<NotificationEvent, NotificationResult> = async (event, context) => {
-  try {
-    console.log('Received event:', JSON.stringify(event, null, 2));
+export const handler: Handler<NotificationEvent, NotificationResult> = async (
+    event,
+    context,
+) => {
+    try {
+        console.log("Received event:", JSON.stringify(event, null, 2));
 
-    const { Records } = event;
-    const { body } = Records[0];
-    const { message } = JSON.parse(body);
+        const { Records } = event;
+        const { body } = Records[0];
+        const { message } = JSON.parse(body);
 
-    // Slack에 메시지 전송
-    await slack.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL_ID,
-      text: message,
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: message
-          }
-        }
-      ]
-    });
+        // Slack에 메시지 전송
+        await slack.chat.postMessage({
+            channel: process.env.SLACK_CHANNEL_ID,
+            text: message,
+            blocks: [
+                {
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: message,
+                    },
+                },
+            ],
+        });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Notification processed successfully'
-      })
-    };
-
-  } catch (error) {
-    console.error('Error:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: 'Error processing notification',
-        error: error.message
-      })
-    };
-  }
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: "Notification processed successfully",
+            }),
+        };
+    } catch (error) {
+        console.error("Error:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: "Error processing notification",
+                error: error.message,
+            }),
+        };
+    }
 };

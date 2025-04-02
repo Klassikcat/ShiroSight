@@ -1,4 +1,4 @@
 {
   "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm",
-  "postCreateCommand": "/bin/bash ./install.sh"
+  "postCreateCommand": "/bin/bash .devcontainer/install.sh"
 }

@@ -1,4 +1,0 @@
-{
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm",
-  "postCreateCommand": "npm install && git config --global core.editor 'vim' && echo 'export EDITOR=vim' >> ~/.bashrc && echo 'export VISUAL=vim' >> ~/.bashrc && source ~/.bashrc"
-}

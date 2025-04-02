@@ -10,11 +10,13 @@
 <br>
 <hr>
 
-Cloudwatch sucks. Especially when you need to analyze cause of the error. Solve it with ShiroSight.
+Cloudwatch sucks. Solve it with ShiroSight.
 
-ShiroSight is an open-source tool for log analysis powered by Large Language Models. It leverages serverless functions and workflows (both Argo workflow for k8s and Step functions for AWS and non-k8s environments) to process and analyze logs using models from providers like OpenAI, Claude, and others. ShiroSight helps teams extract meaningful insights from their log data without the need for complex infrastructure management.
+ShiroSight is an open-source tool for log analysis powered by Large Language Models. It leverages serverless functions and workflows (both Argo workflow for k8s and Step functions for AWS and non-k8s environments) to process and analyze logs using models from providers like OpenAI, Claude, and others. ShiroSight helps teams extract meaningful insights from their log data without the need for complex infrastructure management and tons of **QUERY**".
 
 # Key Feature
+
+- Deep integration with Cloudwatch and Athena
 
 # Installation
 

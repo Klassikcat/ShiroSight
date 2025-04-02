@@ -16,6 +16,9 @@ export const handler: Handler<NotificationEvent, NotificationResult> = async (
     event,
     context,
 ) => {
+    // Sends a new slack message to the channel defined in the environment variable
+    // The message is the body of the event
+    // including the message "Anaylzation has been completed" and the expceted cause of the error.
     try {
         console.log("Received event:", JSON.stringify(event, null, 2));
 

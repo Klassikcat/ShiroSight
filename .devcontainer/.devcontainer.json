@@ -1,4 +1,5 @@
 {
+  "name": "shirosight-devcontainer",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm",
   "postCreateCommand": "/bin/bash .devcontainer/install.sh"
 }

@@ -10,7 +10,15 @@ interface NotificationResult {
     body: string;
 }
 
-const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+// Validate required environment variables
+const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
+const SLACK_CHANNEL_ID = process.env.SLACK_CHANNEL_ID;
+
+if (!SLACK_BOT_TOKEN || !SLACK_CHANNEL_ID) {
+    throw new Error("Missing required environment variables: SLACK_BOT_TOKEN or SLACK_CHANNEL_ID");
+}
+
+const slack = new WebClient(SLACK_BOT_TOKEN);
 
 export const handler: Handler<NotificationEvent, NotificationResult> = async (
     event,
@@ -30,7 +38,7 @@ export const handler: Handler<NotificationEvent, NotificationResult> = async (
 
         // Slack에 메시지 전송
         await slack.chat.postMessage({
-            channel: process.env.SLACK_CHANNEL_ID,
+            channel: SLACK_CHANNEL_ID,
             text: message,
             blocks: [
                 {

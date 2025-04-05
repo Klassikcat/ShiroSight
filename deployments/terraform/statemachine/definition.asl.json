@@ -1,0 +1,71 @@
+{
+  "Comment": "Log Analysis Pipeline",
+  "StartAt": "CollectLogs",
+  "States": {
+    "CollectLogs": {
+      "Type": "Task",
+      "Resource": "${collect_logs_function_arn}",
+      "Next": "ProcessChunks",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "ProcessChunks": {
+      "Type": "Task",
+      "Resource": "${process_chunks_function_arn}",
+      "Next": "AnalyzeWithLLM",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "AnalyzeWithLLM": {
+      "Type": "Task",
+      "Resource": "${analyze_with_llm_function_arn}",
+      "Next": "AggregateResults",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "AggregateResults": {
+      "Type": "Task",
+      "Resource": "${aggregate_results_function_arn}",
+      "Next": "Notify",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "Notify": {
+      "Type": "Task",
+      "Resource": "${notify_function_arn}",
+      "End": true,
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    }
+  }
+} 

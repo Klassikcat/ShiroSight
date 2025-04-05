@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./static/shirosight-icon.svg" alt="shirosight-logo" width="400" height="400"><br />
+  <img src="./static/circle_logo.png" alt="shirosight-logo" width="400" height="400"><br />
   <img src="./static/shirosight-logo.svg" alt="shirosight" width="650" height="200">
 </div>
 <div align="center">
@@ -17,8 +17,17 @@ ShiroSight is an open-source tool for log analysis powered by Large Language Mod
 # Key Feature
 
 - Deep integration with Cloudwatch and Athena
+- Pinpoints Error point logs
+- Dignostics of irregular or malicious activies
+- (TODO) Integreted SDK for catch Exceptions in codespace
+- (TODO) Integration with 
+  - Self-hosted Elasticsearch 
+  - ClickHouse
+  - Grafana Loki
 
 # Installation
+
+## Serverless functions
 
 For quick deployment, follow these steps:
 
@@ -31,5 +40,9 @@ terraform apply
 
 Or, see [Installation](./docs/installation.md) to get more information
 
+## Server SDK
+
 # License
+
+ShiroSight is distributed under the Apache License 2.0.
 

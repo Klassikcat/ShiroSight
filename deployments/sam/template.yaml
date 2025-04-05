@@ -1,0 +1,208 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: ShiroSight Log Analysis Pipeline
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  LogGroupName:
+    Type: String
+    Default: /aws/lambda/*
+  ErrorPattern:
+    Type: String
+    Default: ERROR|Exception|5xx|4xx
+
+Resources:
+  # EventBridge Rules
+  PeriodicTriggerRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger log analysis every 5 minutes
+      ScheduleExpression: rate(5 minutes)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt LogAnalysisPipeline.Arn
+          Id: PeriodicTrigger
+
+  ErrorTriggerRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger log analysis on error patterns
+      EventPattern:
+        source:
+          - aws.logs
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          eventSource:
+            - logs.amazonaws.com
+          eventName:
+            - FilterLogEvents
+          requestParameters:
+            logGroupName:
+              - !Ref LogGroupName
+            filterPattern:
+              - !Ref ErrorPattern
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt LogAnalysisPipeline.Arn
+          Id: ErrorTrigger
+
+  # Step Functions State Machine
+  LogAnalysisPipeline:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine/definition.asl.json
+      DefinitionSubstitutions:
+        CollectLogsFunction: !GetAtt CollectLogsFunction.Arn
+        ProcessChunksFunction: !GetAtt ProcessChunksFunction.Arn
+        AnalyzeWithLLMFunction: !GetAtt AnalyzeWithLLMFunction.Arn
+        AggregateResultsFunction: !GetAtt AggregateResultsFunction.Arn
+        NotifyFunction: !GetAtt NotifyFunction.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref CollectLogsFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ProcessChunksFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AnalyzeWithLLMFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AggregateResultsFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref NotifyFunction
+      Events:
+        PeriodicTrigger:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)
+        ErrorTrigger:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.logs
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - logs.amazonaws.com
+                eventName:
+                  - FilterLogEvents
+                requestParameters:
+                  logGroupName:
+                    - !Ref LogGroupName
+                  filterPattern:
+                    - !Ref ErrorPattern
+
+  # Lambda Functions
+  CollectLogsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/collect-logs/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          LOG_GROUP: !Ref LogGroupName
+      Policies:
+        - CloudWatchLogsReadOnlyPolicy: {}
+        - S3ReadWritePolicy:
+            BucketName: !Ref LogBucket
+
+  ProcessChunksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/process-chunks/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Policies:
+        - S3ReadWritePolicy:
+            BucketName: !Ref LogBucket
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt AnalysisQueue.QueueName
+
+  AnalyzeWithLLMFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/analyze-with-llm/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          OPENAI_API_KEY: !Ref OpenAIKey
+          ANTHROPIC_API_KEY: !Ref AnthropicKey
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt ResultsQueue.QueueName
+
+  AggregateResultsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/aggregate-results/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResultsTable
+
+  NotifyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/notify/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          SLACK_WEBHOOK_URL: !Ref SlackWebhookUrl
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt NotificationTopic.TopicName
+
+  # Supporting Resources
+  LogBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-logs-${AWS::AccountId}
+
+  AnalysisQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-analysis-queue
+
+  ResultsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-results-queue
+
+  ResultsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-results
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${AWS::StackName}-notifications
+
+Outputs:
+  LogAnalysisPipeline:
+    Description: ARN of the Log Analysis Pipeline
+    Value: !GetAtt LogAnalysisPipeline.Arn
+  LogBucket:
+    Description: Name of the S3 bucket for logs
+    Value: !Ref LogBucket
+  ResultsTable:
+    Description: Name of the DynamoDB table for results
+    Value: !Ref ResultsTable

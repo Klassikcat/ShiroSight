@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./static/shiro-logo.png" alt="shirosight-logo" width="400" height="400"><br />
+  <img src="./static/shiro-logo.png" alt="shirosight-logo" width="300" height="300"><br />
   <img src="./static/shirosight-logo.svg" alt="shirosight" width="650" height="200">
 </div>
 <div align="center">
@@ -12,7 +12,7 @@
 
 Cloudwatch sucks. Solve it with ShiroSight.
 
-ShiroSight is an open-source tool for log analysis powered by Large Language Models. It leverages serverless functions and workflows (both Argo workflow for k8s and Step functions for AWS and non-k8s environments) to process and analyze logs using models from providers like OpenAI, Claude, and others. ShiroSight helps teams extract meaningful insights from their log data without the need for complex infrastructure management and tons of **QUERY**".
+ShiroSight is an open-source tool for log analysis powered by Large Language Models. It leverages serverless functions and workflows to process and analyze logs using models from providers like OpenAI, Claude, and others. ShiroSight helps teams extract meaningful insights from their log data without the need for complex infrastructure management and tons of **QUERY**".
 
 # Key Feature
 
@@ -40,7 +40,12 @@ terraform apply
 
 Or, see [Installation](./docs/installation.md) to get more information
 
-## Server SDK
+## Server SDK(TODO)
+
+Server SDK is under development. 
+
+See [Installing Server SDK on Web Server](./docs/install_sdk.md) to get more information.
+
 
 # License
 

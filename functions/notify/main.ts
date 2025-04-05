@@ -10,6 +10,19 @@ interface NotificationResult {
     body: string;
 }
 
+interface SlackBlock {
+    type: "section";
+    text: {
+        type: "mrkdwn";
+        text: string;
+    };
+}
+
+interface LogMessage {
+    logs: string[];
+    title: string;
+}
+
 // Validate required environment variables
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const SLACK_CHANNEL_ID = process.env.SLACK_CHANNEL_ID;
@@ -19,6 +32,17 @@ if (!SLACK_BOT_TOKEN || !SLACK_CHANNEL_ID) {
 }
 
 const slack = new WebClient(SLACK_BOT_TOKEN);
+
+const createSlackBlock = (text: string): SlackBlock => ({
+    type: "section",
+    text: {
+        type: "mrkdwn",
+        text,
+    },
+});
+
+export const generateSlackMessage = (message: LogMessage): SlackBlock[] => 
+    message.logs.map(createSlackBlock);
 
 export const handler: Handler<NotificationEvent, NotificationResult> = async (
     event,
@@ -34,21 +58,14 @@ export const handler: Handler<NotificationEvent, NotificationResult> = async (
 
         const { Records } = event;
         const { body } = Records[0];
-        const { message } = JSON.parse(body);
+        const message: LogMessage = JSON.parse(body);
+        
+        const messageBlocks = generateSlackMessage(message);
 
-        // Slack에 메시지 전송
         await slack.chat.postMessage({
             channel: SLACK_CHANNEL_ID,
-            text: message,
-            blocks: [
-                {
-                    type: "section",
-                    text: {
-                        type: "mrkdwn",
-                        text: message,
-                    },
-                },
-            ],
+            text: message.title,
+            blocks: messageBlocks,
         });
 
         return {

@@ -1,5 +1,18 @@
 {
   "name": "shirosight-devcontainer",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm",
-  "postCreateCommand": "/bin/bash .devcontainer/install.sh"
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "/bin/bash .devcontainer/install.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.mypy-linter",
+        "wakatime.vscode-wakatime",
+        "esbenp.prettier-vscode",
+        "github.vscode-github-actions",
+        "me-dutour-mathieu.vscode-github-actions"
+      ]
+    }
+  }
 }

@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  process-chunks
+  Sample SAM Template for process-chunks
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Runtime: python3.9
+
+Resources:
+  ProcessChunksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.lambda_handler
+      Events:
+        ProcessChunks:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 minute)
+            Enabled: true
+      Environment:
+        Variables:
+          LOG_GROUP: !Ref LogGroup
+      Policies:
+        - CloudWatchLogsReadOnlyAccess:
+            LogGroupName: !Ref LogGroup
+
+Outputs:
+  ProcessChunksFunction:
+    Description: "Process Chunks Lambda Function ARN"
+    Value: !GetAtt ProcessChunksFunction.Arn

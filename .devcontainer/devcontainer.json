@@ -11,7 +11,8 @@
         "wakatime.vscode-wakatime",
         "esbenp.prettier-vscode",
         "github.vscode-github-actions",
-        "me-dutour-mathieu.vscode-github-actions"
+        "me-dutour-mathieu.vscode-github-actions",
+        "oderwat.indent-rainbow"
       ]
     }
   }

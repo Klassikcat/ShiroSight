@@ -1,7 +1,8 @@
-from datetime import datetime
-from typing import Dict, List, Optional, TypedDict
-import aioboto3
 import asyncio
+from datetime import datetime
+from typing import Optional, List, Dict, TypedDict
+import aioboto3
+import orjson
 
 
 class LogEvent(TypedDict):
@@ -23,92 +24,71 @@ class ValidationResult(TypedDict):
     message: str
 
 
-class LogCollector:
-    def __init__(self):
-        self.session = aioboto3.Session()
-        self.client = None
+session = aioboto3.Session(profile_name="blackcircles")
+client = session.client("logs")
 
-    async def __aenter__(self):
-        self.client = await self.session.client("logs").__aenter__()
-        return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.client:
-            await self.client.__aexit__(exc_type, exc_val, exc_tb)
+def parse_timestamp(timestamp: str) -> int:
+    """ISO 8601 형식의 문자열을 밀리초 타임스탬프로 변환"""
+    dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    return int(dt.timestamp() * 1000)
 
-    @staticmethod
-    def _parse_timestamp(timestamp: str) -> int:
-        """ISO 8601 형식의 문자열을 밀리초 타임스탬프로 변환"""
-        dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-        return int(dt.timestamp() * 1000)
 
-    @staticmethod
-    async def validate_params(params: LogQueryParams) -> ValidationResult:
-        """로그 쿼리 파라미터 검증"""
-        try:
-            # 필수 필드 검증
-            required_fields = {"log_group_name", "log_stream_name", "start_time", "end_time"}
-            if not all(field in params for field in required_fields):
-                return {"status": False, "message": "필수 필드가 누락되었습니다."}
+async def get_log_streams(log_group_name: str) -> List[str]:
+    async with session.client("logs") as client:
+        response = await client.describe_log_streams(
+            logGroupName=log_group_name,
+            orderBy="LastEventTime",
+            descending=True,
+        )
+        return [stream["logStreamName"] for stream in response["logStreams"]]
 
-            # 타임스탬프 형식 검증
-            LogCollector._parse_timestamp(params["start_time"])
-            LogCollector._parse_timestamp(params["end_time"])
 
-            return {"status": True, "message": "파라미터가 유효합니다."}
-        except ValueError:
-            return {"status": False, "message": "타임스탬프 형식이 올바르지 않습니다."}
-        except Exception as e:
-            return {"status": False, "message": f"파라미터 검증 중 오류 발생: {str(e)}"}
+async def get_log_events(
+    log_group_name: str, 
+    log_stream_names: List[str],
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None
+) -> List[LogEvent]:
+    """로그 이벤트를 조회합니다"""
+    async with session.client("logs") as client:
+        log_streams = []
+        # 시작 시간과 종료 시간이 제공된 경우 추가
+        for log_stream_name in log_stream_names:
+            params = {
+                "logGroupName": log_group_name,
+                "logStreamName": log_stream_name,
+            }
+            if start_time:
+                params["startTime"] = parse_timestamp(start_time)
+            if end_time:
+                params["endTime"] = parse_timestamp(end_time)
+            params["logStreamName"] = log_stream_name
+            response = await client.get_log_events(**params)
+            log_streams.append(response.get("events", []))
+    return log_streams
 
-    async def collect_logs(self, params: LogQueryParams) -> List[LogEvent]:
-        """지정된 시간 범위 내의 로그를 수집"""
-        start_time_ms = self._parse_timestamp(params["start_time"])
-        end_time_ms = self._parse_timestamp(params["end_time"])
 
-        events: List[LogEvent] = []
-        paginator = self.client.get_paginator("filter_log_events")
-        
-        async for page in paginator.paginate(
-            logGroupName=params["log_group_name"],
-            logStreamNames=[params["log_stream_name"]],
-            startTime=start_time_ms,
-            endTime=end_time_ms,
-            PaginatorConfig={"PageSize": 1000}
-        ):
-            events.extend(page.get("events", []))
-
-        return events
+async def parse_log_events(log_events: str) -> List[Dict]:
+    with asyncio.TaskGroup() as tg:
+        tasks = [parse_log_events(log_event) for log_event in log_events]
+        parsed_logs = await asyncio.gather(*tasks)
+    return parsed_logs
 
 
 def lambda_handler(event: Dict, context) -> Dict:
-    """AWS Lambda 핸들러"""
     try:
-        # 이벤트 루프 생성
         loop = asyncio.get_event_loop()
         if loop.is_closed():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
 
-        # 파라미터 검증
-        validation = loop.run_until_complete(LogCollector.validate_params(event))
-        if not validation["status"]:
-            return {
-                "statusCode": 400,
-                "body": validation["message"]
-            }
-
-        # 로그 수집
-        async def collect():
-            async with LogCollector() as collector:
-                return await collector.collect_logs(event)
-
-        logs = loop.run_until_complete(collect())
+        log_groups = loop.run_until_complete(get_log_events(event["log_group_name"], event["log_stream_name"], event["start_time"], event["end_time"]))
+        events = loop.run_until_complete(parse_log_events(log_groups))
         return {
             "statusCode": 200,
-            "body": logs
+            "body": events
         }
-
     except Exception as e:
         return {
             "statusCode": 500,

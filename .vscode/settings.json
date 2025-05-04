@@ -1,0 +1,4 @@
+{
+    "python.terminl.activateEnv": true,
+    "python.terminl.interpreterPath": "${workspaceFolder}/.venv/bin/python"
+}

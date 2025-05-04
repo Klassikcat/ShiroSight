@@ -1,27 +1,7 @@
 import asyncio
 from datetime import datetime
-from typing import Optional, List, Dict, TypedDict
+from typing import Optional, List, Dict, Any
 import aioboto3
-import orjson
-
-
-class LogEvent(TypedDict):
-    timestamp: int
-    message: str
-    logStreamName: str
-    logGroupName: str
-
-
-class LogQueryParams(TypedDict):
-    log_group_name: str
-    log_stream_name: str
-    start_time: str
-    end_time: str
-
-
-class ValidationResult(TypedDict):
-    status: bool
-    message: str
 
 
 session = aioboto3.Session(profile_name="blackcircles")
@@ -45,16 +25,14 @@ async def get_log_streams(log_group_name: str) -> List[str]:
 
 
 async def get_log_events(
-    log_group_name: str, 
+    log_group_name: str,
     log_stream_names: List[str],
     start_time: Optional[str] = None,
     end_time: Optional[str] = None
-) -> List[LogEvent]:
+) -> List[Dict[str, Any]]:
     """로그 이벤트를 조회합니다"""
     async with session.client("logs") as client:
-        log_streams = []
-        # 시작 시간과 종료 시간이 제공된 경우 추가
-        for log_stream_name in log_stream_names:
+        async def fetch_log_stream(log_stream_name: str):
             params = {
                 "logGroupName": log_group_name,
                 "logStreamName": log_stream_name,
@@ -63,9 +41,11 @@ async def get_log_events(
                 params["startTime"] = parse_timestamp(start_time)
             if end_time:
                 params["endTime"] = parse_timestamp(end_time)
-            params["logStreamName"] = log_stream_name
             response = await client.get_log_events(**params)
-            log_streams.append(response.get("events", []))
+            return response.get("events", [])
+
+        tasks = [fetch_log_stream(stream) for stream in log_stream_names]
+        log_streams = await asyncio.gather(*tasks)
     return log_streams
 
 

@@ -57,9 +57,10 @@ def lambda_handler(event: Dict, context) -> Dict:
             asyncio.set_event_loop(loop)
         log_stream_names = loop.run_until_complete(get_log_stream_names(event["log_group_name"]))
         log_events = loop.run_until_complete(get_log_events(event["log_group_name"], log_stream_names, event["start_time"], event["end_time"]))
+        flatten_log_events = sum(log_events, [])
         return {
             "statusCode": 200,
-            "body": log_events
+            "body": flatten_log_events
         }
     except Exception as e:
         return {

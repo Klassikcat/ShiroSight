@@ -14,7 +14,7 @@ def parse_timestamp(timestamp: str) -> int:
     return int(dt.timestamp() * 1000)
 
 
-async def get_log_streams(log_group_name: str) -> List[str]:
+async def get_log_stream_names(log_group_name: str) -> List[str]:
     async with session.client("logs") as client:
         response = await client.describe_log_streams(
             logGroupName=log_group_name,
@@ -49,25 +49,17 @@ async def get_log_events(
     return log_streams
 
 
-async def parse_log_events(log_events: str) -> List[Dict]:
-    with asyncio.TaskGroup() as tg:
-        tasks = [parse_log_events(log_event) for log_event in log_events]
-        parsed_logs = await asyncio.gather(*tasks)
-    return parsed_logs
-
-
 def lambda_handler(event: Dict, context) -> Dict:
     try:
         loop = asyncio.get_event_loop()
         if loop.is_closed():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-
-        log_groups = loop.run_until_complete(get_log_events(event["log_group_name"], event["log_stream_name"], event["start_time"], event["end_time"]))
-        events = loop.run_until_complete(parse_log_events(log_groups))
+        log_stream_names = loop.run_until_complete(get_log_stream_names(event["log_group_name"]))
+        log_events = loop.run_until_complete(get_log_events(event["log_group_name"], log_stream_names, event["start_time"], event["end_time"]))
         return {
             "statusCode": 200,
-            "body": events
+            "body": log_events
         }
     except Exception as e:
         return {

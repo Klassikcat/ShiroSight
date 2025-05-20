@@ -42,11 +42,13 @@ class CloudwatchCollector:
     with support for pagination, concurrent requests, and error handling.
     """
 
-    def __init__(self, profile_name: str, max_concurrent_requests: int = DEFAULT_MAX_CONCURRENT_REQUESTS):
+    def __init__(self, profile_name: Optional[str] = None, max_concurrent_requests: int = DEFAULT_MAX_CONCURRENT_REQUESTS):
         """Initialize the CloudwatchCollector.
         
         Args:
-            profile_name: AWS profile name to use for authentication
+            profile_name: AWS profile name to use for authentication.
+                          For production use, set to None, then use IAM Role or Instance Profile.
+                          Using IAM Access Key is not supported.
             max_concurrent_requests: Maximum number of concurrent API requests
         """
         self.session = aioboto3.Session(profile_name=profile_name)

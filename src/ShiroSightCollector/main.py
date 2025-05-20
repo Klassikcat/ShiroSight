@@ -15,21 +15,37 @@ logger = logging.getLogger(__name__)
 
 
 class ShiroSightRunner:
+    """
+    This class is used to collect logs from CloudWatch and Athena and upload them to S3.
+    """
+
     def __init__(
             self,
-            profile_name: str,
             max_concurrent_requests: int = 10,
             collect_athena_logs: bool = True,
             athena_s3_bucket: Optional[str] = None,
             athena_s3_prefix: Optional[str] = None,
             collected_logs_s3_bucket: Optional[str] = None,
+            profile_name: Optional[str] = None,
             ):
+        """
+        Initialize the ShiroSightRunner.
+
+        Args:
+            max_concurrent_requests (int, optional): Maximum number of concurrent requests. Defaults to 10.
+            collect_athena_logs (bool, optional): Whether to collect logs from Athena. Defaults to True.
+            athena_s3_bucket (Optional[str], optional): S3 bucket for Athena logs. Defaults to None.
+            athena_s3_prefix (Optional[str], optional): S3 prefix for Athena logs. Defaults to None.
+            collected_logs_s3_bucket (Optional[str], optional): S3 bucket for collected logs. Defaults to None.
+            profile_name (Optional[str], optional): IAM SSO Profile name for local development. Defaults to None. Using IAM Access Key is not supported.
+        """
         self.cloudwatch_collector = CloudwatchCollector(profile_name, max_concurrent_requests)
         if collect_athena_logs:
-            self.athena_collector = AthenaLogsCollector(profile_name, max_concurrent_requests)
+            self.athena_collector = AthenaLogsCollector(profile_name, max_concurrent_requests, athena_s3_bucket, athena_s3_prefix)
         else:
             self.athena_collector = None
-        self.s3_uploader = S3Uploader(profile_name)
+        self.s3_uploader = S3Uploader(profile_name, collected_logs_s3_bucket)
+        self.__post_init__()
 
     def __post_init__(self):
         required_athena_params = {

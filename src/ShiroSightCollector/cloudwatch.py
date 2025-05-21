@@ -103,7 +103,7 @@ class CloudwatchCollector:
                     response = await self._fetch_log_streams_page(client, log_group_name, next_token)
                     log_streams.extend([stream["logStreamName"] for stream in response["logStreams"]])
                     next_token = response.get("nextToken")
-                    if not next_token:
+                    if not next_token or next_token == response.get("nextToken"):
                         break
                         
         return log_streams

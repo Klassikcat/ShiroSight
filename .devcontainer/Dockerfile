@@ -2,6 +2,8 @@ ARG PYTHON_VERSION=3.12
 ARG DEBIAN_VERSION=bookworm
 FROM mcr.microsoft.com/devcontainers/python:${PYTHON_VERSION}-${DEBIAN_VERSION}
 
+USER root
+
 RUN apt-get update && apt-get install -y \
     vim \
     apt-transport-https \
@@ -27,6 +29,8 @@ RUN arch=$(uname -m) && \
     ./aws/install && \
     rm awscliv2.zip && \
     rm -rf aws
+
+USER vscode
 
 RUN pip install --upgrade pip
 RUN pip install uv

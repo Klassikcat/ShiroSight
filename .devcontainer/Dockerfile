@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
 RUN rm -rf /var/lib/apt/lists/*
 
 USER vscode
+
 RUN pip install --upgrade pip
 RUN pip install uv
 COPY . .

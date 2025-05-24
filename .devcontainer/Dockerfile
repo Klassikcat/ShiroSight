@@ -13,7 +13,10 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     lsb-release \
     git-lfs \
-    software-properties-common
+    software-properties-common \
+    build-essential \
+    python3-dev \
+    libyaml-dev
 
 RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null && \
     echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | tee -a /etc/apt/sources.list.d/trivy.list

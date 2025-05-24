@@ -8,11 +8,11 @@ import logging
 from .types import LogEvent, LogStream
 
 try:
-    from ShiroSightUtilities.timestamps import parse_timestamp
-    from ShiroSightUtilities.circuit_breaker import circuit_breaker
+    from utilities.timestamps import parse_timestamp
+    from utilities.circuit_breaker import circuit_breaker
 except ImportError:  # For Local Development
-    from ..ShiroSightUtilities.timestamps import parse_timestamp
-    from ..ShiroSightUtilities.circuit_breaker import circuit_breaker
+    from ..utilities.timestamps import parse_timestamp
+    from ..utilities.circuit_breaker import circuit_breaker
 
 # Constants
 DEFAULT_MAX_CONCURRENT_REQUESTS = 10

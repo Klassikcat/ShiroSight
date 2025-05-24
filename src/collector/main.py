@@ -40,10 +40,15 @@ class ShiroSightRunner:
             profile_name (Optional[str], optional): IAM SSO Profile name for local development. Defaults to None. Using IAM Access Key is not supported.
         """
         self.cloudwatch_collector = CloudwatchCollector(profile_name, max_concurrent_requests)
+        self.collect_athena_logs = collect_athena_logs
         if collect_athena_logs:
             self.athena_collector = AthenaLogsCollector(profile_name, max_concurrent_requests, athena_s3_bucket, athena_s3_prefix)
+            self.athena_s3_bucket = athena_s3_bucket
+            self.athena_s3_prefix = athena_s3_prefix
         else:
             self.athena_collector = None
+            self.athena_s3_bucket = None
+            self.athena_s3_prefix = None
         self.s3_uploader = S3Uploader(profile_name, collected_logs_s3_bucket)
         self.__post_init__()
 
@@ -70,8 +75,16 @@ class ShiroSightRunner:
             ):
         tasks = [
             self.cloudwatch_collector.collect_logs(log_group_name, start_time, end_time),
-            self.athena_collector.collect_logs(log_group_name, start_time, end_time),
-            self.s3_uploader.upload_logs(log_group_name, start_time, end_time)
         ]
-        cloudwatch_logs, athena_logs, s3_logs = await asyncio.gather(*tasks)
+        if self.athena_collector:
+            tasks.append(self.athena_collector.collect_logs(log_group_name, start_time, end_time))
+        tasks.append(self.s3_uploader.upload_logs(log_group_name, start_time, end_time))
+        
+        results = await asyncio.gather(*tasks)
+        
+        cloudwatch_logs = results[0]
+        athena_logs = results[1] if self.athena_collector else None
+        s3_result_index = 2 if self.athena_collector else 1
+        s3_logs = results[s3_result_index]
+        
         return cloudwatch_logs, athena_logs, s3_logs

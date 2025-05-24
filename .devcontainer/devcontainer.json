@@ -1,7 +1,17 @@
 {
-  "name": "shirosight-devcontainer",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "name": "ShiroSight-Devcontainer",
   "postCreateCommand": "/bin/bash .devcontainer/install.sh",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "PYTHON_VERSION": "3.12",
+      "DEBIAN_VERSION": "bookworm"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [

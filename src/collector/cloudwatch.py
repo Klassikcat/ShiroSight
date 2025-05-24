@@ -1,9 +1,11 @@
+import re
 import asyncio
 from itertools import chain
 from typing import Optional, List, Dict, Any, TypedDict
 import aioboto3
 from mypy_boto3_logs.client import CloudWatchLogsClient
 import logging
+from .types import LogEvent, LogStream
 
 try:
     from ShiroSightUtilities.timestamps import parse_timestamp
@@ -17,15 +19,6 @@ DEFAULT_MAX_CONCURRENT_REQUESTS = 10
 DEFAULT_MAX_ATTEMPTS = 100
 DEFAULT_TIMEOUT = 30
 
-# Type definitions
-class LogStream(TypedDict):
-    logStreamName: str
-    lastEventTime: int
-
-class LogEvent(TypedDict):
-    timestamp: int
-    message: str
-    eventId: str
 
 logging.basicConfig(
     level=logging.INFO,
@@ -103,7 +96,7 @@ class CloudwatchCollector:
                     response = await self._fetch_log_streams_page(client, log_group_name, next_token)
                     log_streams.extend([stream["logStreamName"] for stream in response["logStreams"]])
                     next_token = response.get("nextToken")
-                    if not next_token or next_token == response.get("nextToken"):
+                    if not next_token:
                         break
                         
         return log_streams
@@ -179,8 +172,8 @@ class CloudwatchCollector:
                         
                         all_events.extend(response.get("events", []))
                         next_token = response.get("nextForwardToken")
-                        
-                        if not next_token or next_token == response.get("nextToken"):
+
+                        if not next_token:
                             break
                             
                     except Exception as e:

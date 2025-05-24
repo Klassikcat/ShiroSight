@@ -1,0 +1,58 @@
+[project]
+name = "ShiroSight"
+version = "0.1.0"
+description = "ShiroSight is a tool for analyzing logs from AWS CloudWatch and Athena using Autogen, OpenAI, Gemini, or Bedrock."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3",
+    "autogen-agentchat",
+    "autogen-ext[openai]",
+    "autogen-ext[gemini]",
+    "autogen-ext[bedrock]",
+]
+[project.optional-dependencies]
+dev = [
+    "ipykernel",
+    "jupyter",
+    "jupyterlab",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-timeout",
+    "pytest-xdist"
+]
+ci = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-timeout",
+    "pytest-xdist"
+]
+collector = [
+    "aioboto3",
+]
+analyzer = [
+    "autogen-agentchat",
+    "autogen-ext[openai]",
+    "autogen-ext[gemini]",
+    "autogen-ext[bedrock]",
+]
+cli = [
+    "typer",
+]
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov"
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]

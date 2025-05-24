@@ -32,8 +32,8 @@ RUN pip install --upgrade pip
 RUN pip install uv
 
 USER root
-WORKDIR /workspace
+WORKDIR /workspaces
 COPY . .
-RUN uv sync && chown -R vscode:vscode /workspace
+RUN uv sync && chown -R vscode:vscode /workspaces
 
 USER vscode

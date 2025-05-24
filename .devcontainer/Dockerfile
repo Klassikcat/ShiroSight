@@ -31,9 +31,5 @@ RUN arch=$(uname -m) && \
 RUN pip install --upgrade pip
 RUN pip install uv
 
-USER root
-WORKDIR /workspaces
 COPY . .
-RUN uv sync && chown -R vscode:vscode /workspaces
-
-USER vscode
+RUN uv sync

@@ -30,6 +30,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 USER vscode
 
+ENV PATH="/root/.cargo/bin/:$PATH"
 RUN pip install --upgrade pip
 RUN pip install uv
 COPY . .

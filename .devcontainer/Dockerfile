@@ -28,21 +28,6 @@ RUN apt-get update && apt-get install -y \
     terraform \
     trivy 
 
-RUN arch=$(uname -m) && \
-    if [ "$arch" = "x86_64" ]; then \
-        architecture="amd64"; \
-    elif [ "$arch" = "aarch64" ] || [ "$arch" = "arm64" ]; then \
-        architecture="arm64"; \
-    else \
-        echo "Your CPU architecture is not supported. exit."; \
-        exit 1; \
-    fi && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-$architecture.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm awscliv2.zip && \
-    rm -rf aws
-
 RUN rm -rf /var/lib/apt/lists/*
 
 USER vscode

@@ -9,6 +9,9 @@
       "DEBIAN_VERSION": "bookworm"
     }
   },
+  "runArgs": [
+    "--name", "shirosight-devcontainer"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
